@@ -14,7 +14,7 @@ The *current images* is based on the **alpine** version edge and contains:
 
 ## Usage
 
-### Create a ``Dockerfile``
+### Create ``Dockerfile``
 
 A simple ``Dockerfile`` using these base images could look like this:
 
@@ -61,4 +61,25 @@ RUN chown invenio:invenio .
 USER invenio
 
 ENTRYPOINT [ "bash", "-c"]
+```
+
+### Create ``pyproject.toml``
+
+A pyproject.toml file could look like:
+
+```
+[project]
+name = "NAME"
+requires-python = ">= 3.12"
+dynamic = ["version"]
+
+dependencies = [
+  "invenio-app-rdm[opensearch2]~=13.0.0b2.dev3",
+  "uwsgi>=2.0",
+  "uwsgitop>=0.11",
+  "uwsgi-tools>=1.1.1",
+]
+
+[tool.setuptools]
+py-modules = []
 ```
