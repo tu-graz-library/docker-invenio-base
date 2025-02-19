@@ -34,7 +34,8 @@ RUN apk add --update --no-cache --repository=https://dl-cdn.alpinelinux.org/alpi
     linux-headers \
     xmlsec-dev \
     xmlsec \
-    uv
+    uv \
+    pnpm
 
 RUN uv venv ${VIRTUAL_ENV}
 RUN source ${VIRTUAL_ENV}/bin/activate
