@@ -9,7 +9,7 @@ The *current images* is based on the **alpine** version edge and contains:
 
 - Python v3.12 set as default Python interpreter with upgraded versions of pip, uv.
 - Node.js > v20.x
-- NPM > v10
+- PNPM > v10
 - Working directory for an Invenio instance.
 
 ## Usage
@@ -26,6 +26,10 @@ COPY pyproject.toml uv.lock ./
 
 RUN uv sync --frozen
 
+ENV INVENIO_WEBPACKEXT_PROJECT="invenio_assets.webpack:rspack_project"
+
+RUN invenio collect --verbose
+RUN invenio webpack create
 
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./assets/ ${INVENIO_INSTANCE_PATH}/assets/
@@ -33,11 +37,10 @@ COPY ./static/ ${INVENIO_INSTANCE_PATH}/static/
 COPY ./translations ${INVENIO_INSTANCE_PATH}/translations/
 COPY ./templates ${INVENIO_INSTANCE_PATH}/templates/
 
-RUN invenio collect --verbose && invenio webpack create
 
 WORKDIR ${INVENIO_INSTANCE_PATH}/assets
-RUN npm install --legacy-peer-deps
-RUN npm run build
+RUN pnpm install --legacy-peer-deps
+RUN pnpm run build
 
 # STAGE 2
 FROM ghcr.io/tu-graz-library/docker-invenio-base:main-frontend AS frontend
