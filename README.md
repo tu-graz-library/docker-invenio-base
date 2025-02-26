@@ -9,12 +9,12 @@ The *current images* is based on the **alpine** version edge and contains:
 
 - Python v3.12 set as default Python interpreter with upgraded versions of pip, uv.
 - Node.js > v20.x
-- NPM > v10
+- PNPM > v10
 - Working directory for an Invenio instance.
 
 ## Usage
 
-### Create a ``Dockerfile``
+### Create ``Dockerfile``
 
 A simple ``Dockerfile`` using these base images could look like this:
 
@@ -26,18 +26,19 @@ COPY pyproject.toml uv.lock ./
 
 RUN uv sync --frozen
 
-
 COPY ./app_data/ ${INVENIO_INSTANCE_PATH}/app_data/
 COPY ./assets/ ${INVENIO_INSTANCE_PATH}/assets/
 COPY ./static/ ${INVENIO_INSTANCE_PATH}/static/
 COPY ./translations ${INVENIO_INSTANCE_PATH}/translations/
 COPY ./templates ${INVENIO_INSTANCE_PATH}/templates/
 
+ENV INVENIO_ASSETS_BUILDER="rspack"
+
 RUN invenio collect --verbose && invenio webpack create
 
 WORKDIR ${INVENIO_INSTANCE_PATH}/assets
-RUN npm install --legacy-peer-deps
-RUN npm run build
+RUN pnpm install --legacy-peer-deps
+RUN pnpm run build
 
 # STAGE 2
 FROM ghcr.io/tu-graz-library/docker-invenio-base:main-frontend AS frontend
@@ -58,4 +59,25 @@ RUN chown invenio:invenio .
 USER invenio
 
 ENTRYPOINT [ "bash", "-c"]
+```
+
+### Create ``pyproject.toml``
+
+A pyproject.toml file could look like:
+
+```
+[project]
+name = "NAME"
+requires-python = ">= 3.12"
+dynamic = ["version"]
+
+dependencies = [
+  "invenio-app-rdm[opensearch2]~=13.0.0b2.dev2",
+  "uwsgi>=2.0",
+  "uwsgitop>=0.11",
+  "uwsgi-tools>=1.1.1",
+]
+
+[tool.setuptools]
+py-modules = []
 ```
