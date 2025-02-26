@@ -1,8 +1,8 @@
 FROM alpine:edge
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 ENV PYTHONUNBUFFERED=1
 ENV PIPENV_VERBOSITY=-1
@@ -12,7 +12,7 @@ ENV WORKING_DIR=/opt/invenio
 ENV INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
 ENV PYTHONUSERBASE=$VIRTUAL_ENV
 ENV PATH=$VIRTUAL_ENV/bin:$PATH
-ENV PYTHONPATH $VIRTUAL_ENV/lib/python3.12:$PATH
+ENV PYTHONPATH=$VIRTUAL_ENV/lib/python3.12:$PATH
 
 RUN apk update
 RUN apk add --update --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
