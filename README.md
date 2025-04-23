@@ -12,6 +12,17 @@ The *current images* is based on the **alpine** version edge and contains:
 - PNPM > v10
 - Working directory for an Invenio instance.
 
+The reason why we use Alpine as the base image is to reduce the image size.
+Combined with the multistage approach it is possible to have a size of around
+187.35 MiB (compressed). PNPM, rspack and uv are reducing the build time to less
+than 4 minutes.
+
+The builder image builds lxml and xmlsec which increases the build time for the
+image but this step is necessary because of ABI problems between lxml and
+xmlsec. Those problems enforce a rebuild of builder and frontend base image on
+every release of lxml or xmlsec. see
+[here](https://github.com/xmlsec/python-xmlsec/issues/320)
+
 ## Usage
 
 ### Create ``Dockerfile``
