@@ -13,7 +13,7 @@ on:
 jobs:
 
   build-publish-frontend:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -45,7 +45,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}-frontend
 
   build-publish-builder:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
