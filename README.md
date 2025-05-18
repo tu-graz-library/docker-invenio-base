@@ -50,7 +50,7 @@ COPY ./templates ${INVENIO_INSTANCE_PATH}/templates/
 
 
 WORKDIR ${INVENIO_INSTANCE_PATH}/assets
-RUN pnpm install --legacy-peer-deps
+RUN pnpm install
 RUN pnpm run build
 
 # STAGE 2
