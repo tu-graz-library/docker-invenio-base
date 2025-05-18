@@ -62,7 +62,7 @@ COPY ./pnpm-lock.yaml ${INVENIO_INSTANCE_PATH}/assets/
 
 
 WORKDIR ${INVENIO_INSTANCE_PATH}/assets
-RUN pnpm install --legacy-peer-deps
+RUN pnpm install
 RUN pnpm run build
 
 # STAGE 2
