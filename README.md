@@ -37,6 +37,9 @@ COPY pyproject.toml uv.lock ./
 
 RUN uv sync --frozen
 
+# this is an experimental feature, which enables to override javascript translations
+RUN invenio i18n distribute-js-translations --input-directory ${VIRTUAL_ENV}/lib/python3.12/site-packages/invenio_translations_de/ui
+
 ENV INVENIO_WEBPACKEXT_PROJECT="invenio_assets.webpack:rspack_project"
 
 RUN invenio collect --verbose
@@ -89,8 +92,18 @@ dependencies = [
   "uwsgi>=2.0",
   "uwsgitop>=0.11",
   "uwsgi-tools>=1.1.1",
+
+  # translation bundle
+  # as the package name suggests, it is a experimental package
+  # this package provde the translations for python and javascript code
+  # the python code will be available by installation over an entrypoint
+  # for javascript the command in the dockerfile is necessary
+  "invenio-translations-de-tugraz-experiment"
 ]
 
 [tool.setuptools]
 py-modules = []
+
+[tool.uv.sources]
+invenio-translations-de-tugraz-experiment = { git = "https://path/to/invenio-translations-de-tugraz-experiment", branch = "main" }
 ```
