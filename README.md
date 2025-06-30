@@ -51,6 +51,15 @@ COPY ./static/ ${INVENIO_INSTANCE_PATH}/static/
 COPY ./translations ${INVENIO_INSTANCE_PATH}/translations/
 COPY ./templates ${INVENIO_INSTANCE_PATH}/templates/
 
+# enables the option to have a deterministic javascript dependency build
+# package.json and pnpm-lock are needed, because otherwise package.json
+# is newer as pnpm-lock and pnpm-lock would not be used then
+# do this only if you know what you are doing. forgetting to update those
+# two files can cause bugs, because of possible missmatches of needed
+# javascript dependencies
+COPY ./package.json ${INVENIO_INSTANCE_PATH}/assets/
+COPY ./pnpm-lock.yaml ${INVENIO_INSTANCE_PATH}/assets/
+
 
 WORKDIR ${INVENIO_INSTANCE_PATH}/assets
 RUN pnpm install --legacy-peer-deps
