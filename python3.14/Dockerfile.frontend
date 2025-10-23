@@ -1,0 +1,43 @@
+FROM python:3.14-alpine
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+ENV UV_FROZEN=1 \
+    # https://docs.astral.sh/uv/reference/cli/#uv-run--compile-bytecode
+    UV_COMPILE_BYTECODE=1 \
+    # https://docs.astral.sh/uv/reference/cli/#uv-run--link-mode
+    UV_LINK_MODE=copy \
+    # https://docs.astral.sh/uv/reference/cli/#uv-run--no-managed-python
+    UV_NO_MANAGED_PYTHON=1 \
+    # https://docs.astral.sh/uv/reference/cli/#uv-python-find--system
+    UV_SYSTEM_PYTHON=1 \
+    # https://docs.astral.sh/uv/reference/environment/#uv_python_downloads
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PROJECT_ENVIRONMENT=/usr/local
+
+ENV WORKING_DIR=/opt/invenio \
+    INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
+
+
+RUN apk update
+
+# ttf-dejavu: for doi badges
+RUN apk add --update --no-cache \
+    libxslt-dev \
+    xmlsec \
+    cairo \
+    uwsgi-python3 \
+    fontconfig \
+    ttf-dejavu \
+    bash \
+    uv
+
+RUN mkdir -p ${INVENIO_INSTANCE_PATH} \
+    mkdir -p ${WORKING_DIR}/src/saml/idp/cert
+
+RUN adduser invenio --no-create-home --disabled-password
+
+ENTRYPOINT [ "bash", "-c"]
+
