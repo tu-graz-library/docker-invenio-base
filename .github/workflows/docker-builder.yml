@@ -1,0 +1,46 @@
+name: build and push docker image (reusable workflow builder)
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: "which python version"
+        type: string
+        default: ""
+
+jobs:
+  build-publish-builder:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: python${{ inputs.tag}}/Dockerfile.builder
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}-builder-${{ inputs.tag }}
+          labels: ${{ steps.meta.outputs.labels }}-builder-${{ inputs.tag }}
