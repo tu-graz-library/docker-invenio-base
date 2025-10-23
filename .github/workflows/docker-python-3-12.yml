@@ -1,0 +1,25 @@
+name: build and push docker image for python3.12
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - python3.12
+    workflow_dispatch:
+      # manually trigger
+
+  workflow_dispatch:
+
+jobs:
+  build-publish-frontend:
+    uses: tu-graz-library/docker-invenio-base/.github/workflows/docker-frontend.yml@main
+    secrets: inherit
+    with:
+      tag: 3.12
+
+  build-publish-builder:
+    uses: tu-graz-library/docker-invenio-base/.github/workflows/docker-builder.yml@main
+    secrets: inherit
+    with:
+      tag: 3.12
